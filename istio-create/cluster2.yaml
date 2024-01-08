@@ -1,0 +1,16 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  # meshConfig:
+  #   defaultConfig:
+  #     proxyMetadata:
+  #       # Enable basic DNS proxying
+  #       ISTIO_META_DNS_CAPTURE: "true"
+  values:
+    global:
+      meshID: mesh2
+      multiCluster: # 开启多集群配置
+        clusterName: cluster2  # 指定集群名称
+      network: network2 # 指定网络名称
+      logging:
+        level: debug

@@ -1,0 +1,25 @@
+# locality-lb-failover.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: helloworld
+  namespace: sample
+spec:
+  host: helloworld.sample.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+        failover: # 失败转移
+          - from: region1
+            to: region2
+          - from: region2
+            to: region1
+    outlierDetection: # 异常检测
+      consecutive5xxErrors: 1 # 连续5次5xx错误
+      interval: 1s # 1秒检查一次
+      baseEjectionTime: 1m # 1分钟内连续5次5xx错误，就会被隔离1分钟

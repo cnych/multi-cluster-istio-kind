@@ -1,0 +1,29 @@
+# locality-lb-weight.yaml
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: helloworld
+  namespace: sample
+spec:
+  host: helloworld.sample.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      http:
+        maxRequestsPerConnection: 1
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+        distribute:
+          - from: region1/*
+            to:
+              "region1/*": 80
+              "region2/*": 20
+          - from: region2/*
+            to:
+              "region2/*": 80
+              "region1/*": 20
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 1s
+      baseEjectionTime: 1m
