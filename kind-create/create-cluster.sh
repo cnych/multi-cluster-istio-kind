@@ -37,7 +37,7 @@ function fixup-cluster() {
   if [ "$OS" != "Darwin" ];then
     # Set container IP address as kube API endpoint in order for clusters to reach kube API servers in other clusters.
     local docker_ip
-    docker_ip=$(docker inspect --format='{{range .NetworkSettings.IPAddress}}{{.IPAddress}}{{end}}' "cluster${i}-control-plane")
+    docker_ip=$(docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "cluster${i}-control-plane")
     kubectl config set-cluster "kind-cluster${i}" --server="https://${docker_ip}:6443"
   fi
 
